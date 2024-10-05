@@ -7,17 +7,29 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { AnimatePresence, MotionValue, motion, useMotionValue, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Image from 'next/image';
+import { useSession, signIn, signOut } from "next-auth/react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navItems = [
   { name: "Home", path: "/" },
   { name: "Topics", path: "/topics" },
   { name: "Challenges", path: "/challenges" },
+  { name: "Community", path: "/community" },
   { name: "Leaderboard", path: "/leaderboard" },
 ];
 
 const Header = () => {
   const pathname = usePathname();
   const MotionLink = motion(Link);
+  const { data: session } = useSession();
 
   const mapRange = (
     inputLower: number,
@@ -101,8 +113,27 @@ const Header = () => {
           </AnimatePresence>
         </ul>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm">Sign In</Button>
           <ModeToggle />
+          {session ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Avatar>
+                  <AvatarImage src={session.user.image} />
+                  <AvatarFallback>{session.user.name[0]}</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <Link href="/profile">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => signOut()}>Sign out</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button onClick={() => signIn()}>Sign In</Button>
+          )}
         </div>
       </nav>
     </header>
