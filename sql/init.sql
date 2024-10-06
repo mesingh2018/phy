@@ -1,0 +1,59 @@
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255),
+  email VARCHAR(255) UNIQUE,
+  email_verified TIMESTAMP,
+  image VARCHAR(255),
+  points INTEGER DEFAULT 0
+);
+
+CREATE TABLE posts (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  content TEXT NOT NULL,
+  published BOOLEAN DEFAULT false,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  author_id INTEGER REFERENCES users(id)
+);
+
+CREATE TABLE comments (
+  id SERIAL PRIMARY KEY,
+  content TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  author_id INTEGER REFERENCES users(id),
+  post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE tags (
+  name VARCHAR(50) PRIMARY KEY
+);
+
+CREATE TABLE post_tags (
+  post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
+  tag_name VARCHAR(50) REFERENCES tags(name) ON DELETE CASCADE,
+  PRIMARY KEY (post_id, tag_name)
+);
+
+CREATE TABLE content_requests (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  author_id INTEGER REFERENCES users(id),
+  votes INTEGER DEFAULT 0
+);
+
+CREATE TABLE badges (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description TEXT
+);
+
+CREATE TABLE user_badges (
+  user_id INTEGER REFERENCES users(id),
+  badge_id INTEGER REFERENCES badges(id),
+  PRIMARY KEY (user_id, badge_id)
+);
