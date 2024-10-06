@@ -60,14 +60,14 @@ export default function PricingPlans() {
             onHoverStart={() => setHoveredIndex(index)}
             onHoverEnd={() => setHoveredIndex(null)}
           >
-            <Card className={`flex flex-col h-full ${plan.popular ? 'border-primary' : ''}`}>
+            <Card className={`flex flex-col h-full ${plan.popular ? 'border-primary' : ''} relative`}>
+              {plan.popular && (
+                <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded-bl">
+                  Most Popular
+                </div>
+              )}
               <CardHeader>
                 <CardTitle className="text-2xl text-center">{plan.title}</CardTitle>
-                {plan.popular && (
-                  <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded-bl">
-                    Most Popular
-                  </div>
-                )}
               </CardHeader>
               <CardContent className="flex-grow flex flex-col justify-between">
                 <div>
